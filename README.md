@@ -30,7 +30,7 @@ The project serves as a summative assessment to evaluate skills in designing, de
   ## Installation
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/<your-username>/used-car-sales-portal.git
+   git clone https://github.com/benjamintzh/usedcarsaleportal.git
 
 2. **Set Up MySQL Database**:
    - Import the database schema from Module 4 into MySQL using phpMyAdmin or a MySQL client.
