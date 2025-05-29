@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Appointments - AutoXpress</title>
+    <link rel="stylesheet" href="/css/manage-appointments.css">
+</head>
+<body>
+	<header class="site-header">
+			<div class="container header-container">
+		<div class="logo">
+			<a href="/admin/dashboard">AutoXpress</a>
+		</div>
+		<nav class="navbar">
+			<a href="/home">Client Portal</a>
+			<a href="/admin/manage-appointments">Manage Appointments</a>
+			<a href="/admin/manage-bids">Manage Bids</a>
+			<a href="/admin/manage-cars">Manage Cars</a>
+			<a href="/admin/manage-users">Manage Users</a>
+			<a th:href="@{/user/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+			</nav>
+		</div>
+	</header>
+    <main>
+        <h2>All Appointments</h2>
+        <div class="filter-section">
+            <select id="statusFilter" class="filter-dropdown">
+                <option value="all">All Status</option>
+                <option value="pending">PENDING</option>
+                <option value="approved">APPROVED</option>
+                <option value="denied">DENIED</option>
+            </select>
+            <select id="userFilter" class="filter-dropdown">
+                <option value="all">All Users</option>
+                <option th:each="username : ${usernames}" th:value="${username}" th:text="${username}"></option>
+            </select>
+        </div>
+        <table id="appointmentsTable" class="appointments-table">
+            <thead>
+                <tr>
+                    <th data-sort="id">ID <span class="sort-arrow" onclick="sortTable(0)">▲</span></th>
+                    <th data-sort="car" onclick="sortTable(1)">Car <span class="sort-arrow">▲</span></th>
+                    <th data-sort="user" onclick="sortTable(2)">User <span class="sort-arrow">▲</span></th>
+                    <th data-sort="date" onclick="sortTable(3)">Date <span class="sort-arrow">▲</span></th>
+                    <th data-sort="status" onclick="sortTable(4)">Status <span class="sort-arrow">▲</span></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="appointment, iterStat : ${appointments}" th:id="'row' + ${iterStat.count}">
+                    <td th:text="${appointment.id}"></td>
+                    <td th:text="${appointment.car.manufacture} + ' ' + ${appointment.car.model}"></td>
+                    <td th:text="${appointment.user.username}"></td>
+                    <td th:text="${#temporals.format(appointment.appointmentDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:class="'status-' + ${appointment.status.toLowerCase()}" th:text="${appointment.status}"></td>
+                    <td>
+                        <a th:href="@{/admin/appointment/{id}(id=${appointment.id})}" class="view-details-btn">View Details</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="noResultsMessage" class="no-results-message" style="display: none;">
+            No appointments match the selected filters.
+        </div>
+    </main>
+    <script>
+        let sortDirection = 1;
+        let lastSortedColumn = -1;
+
+        function applyFilters() {
+            try {
+                const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+                const userFilter = document.getElementById("userFilter").value.toLowerCase();
+                const table = document.getElementById("appointmentsTable");
+                const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const noResultsMessage = document.getElementById("noResultsMessage");
+                let hasVisibleRows = false;
+
+                console.log("Applying filters:", { statusFilter, userFilter });
+
+                for (let row of rows) {
+                    const status = row.cells[4].textContent.trim().toLowerCase();
+                    const username = row.cells[2].textContent.trim().toLowerCase();
+
+                    const matchesStatus = statusFilter === "all" || status === statusFilter;
+                    const matchesUser = userFilter === "all" || username === userFilter;
+
+                    console.log("Row check:", { status, username, matchesStatus, matchesUser });
+
+                    if (matchesStatus && matchesUser) {
+                        row.style.display = "";
+                        hasVisibleRows = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+
+                noResultsMessage.style.display = hasVisibleRows ? "none" : "block";
+                console.log("Visible rows:", hasVisibleRows);
+            } catch (error) {
+                console.error("Error applying filters:", error);
+            }
+        }
+
+        function sortTable(columnIndex) {
+            try {
+                const table = document.getElementById("appointmentsTable");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const rows = Array.from(tbody.getElementsByTagName("tr"));
+
+                const headers = table.getElementsByTagName("th");
+                for (let i = 0; i < headers.length; i++) {
+                    headers[i].classList.remove("sorted");
+                    headers[i].getElementsByClassName("sort-arrow")[0].innerHTML = "▲";
+                }
+
+                if (lastSortedColumn === columnIndex) {
+                    sortDirection *= -1;
+                } else {
+                    sortDirection = 1;
+                }
+                lastSortedColumn = columnIndex;
+
+                rows.sort((a, b) => {
+                    let aValue = a.cells[columnIndex].textContent.trim();
+                    let bValue = b.cells[columnIndex].textContent.trim();
+
+                    // Special handling for Car column (sort by manufacture then model)
+                    if (columnIndex === 1) {
+                        const aParts = aValue.split(' ');
+                        const bParts = bValue.split(' ');
+                        const aManufacture = aParts[0];
+                        const bManufacture = bParts[0];
+                        const aModel = aParts.slice(1).join(' ');
+                        const bModel = bParts.slice(1).join(' ');
+                        const primaryCompare = aManufacture.localeCompare(bManufacture);
+                        return primaryCompare !== 0 ? primaryCompare * sortDirection : aModel.localeCompare(bModel) * sortDirection;
+                    }
+
+                    // Numeric sorting for ID
+                    if (columnIndex === 0) {
+                        return (parseInt(aValue) - parseInt(bValue)) * sortDirection;
+                    }
+
+                    // Date sorting for Date column
+                    if (columnIndex === 3) {
+                        const aDate = new Date(aValue.replace(' ', 'T'));
+                        const bDate = new Date(bValue.replace(' ', 'T'));
+                        return (aDate - bDate) * sortDirection;
+                    }
+
+                    // Default alphanumeric sorting
+                    return aValue.localeCompare(bValue, undefined, { numeric: true }) * sortDirection;
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+                headers[columnIndex].classList.add("sorted");
+                headers[columnIndex].getElementsByClassName("sort-arrow")[0].innerHTML = sortDirection === 1 ? "▲" : "▼";
+
+                applyFilters();
+                console.log("Table sorted by column:", columnIndex);
+            } catch (error) {
+                console.error("Error sorting table:", error);
+            }
+        }
+
+        document.getElementById("statusFilter").addEventListener("change", function() {
+            try {
+                console.log("Status filter changed:", this.value);
+                applyFilters();
+            } catch (error) {
+                console.error("Error applying status filter:", error);
+            }
+        });
+
+        document.getElementById("userFilter").addEventListener("change", function() {
+            try {
+                console.log("User filter changed:", this.value);
+                applyFilters();
+            } catch (error) {
+                console.error("Error applying user filter:", error);
+            }
+        });
+
+        // Initial filter application
+        try {
+            applyFilters();
+        } catch (error) {
+            console.error("Error during initial filter application:", error);
+        }
+    </script>
+</body>
+</html>

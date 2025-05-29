@@ -1,0 +1,146 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Main */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 1rem 0 0.5rem;
+}
+
+/* View Details Button */
+.view-details {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background-color: #3b82f6;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.view-details:hover {
+    background-color: #2563eb;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+form {
+    display: inline-block;
+}
+
+button {
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background-color: #ef4444;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #dc2626;
+}
+
+form[action*="/approve"] button,
+form[action*="/activate"] button,
+form[action*="/make-admin"] button {
+    background-color: #10b981;
+}
+
+form[action*="/approve"] button:hover,
+form[action*="/activate"] button:hover,
+form[action*="/make-admin"] button:hover {
+    background-color: #059669;
+}
+
+form[action*="/deny"] button,
+form[action*="/reject"] button,
+form[action*="/deactivate"] button {
+    background-color: #6b7280;
+}
+
+form[action*="/deny"] button:hover,
+form[action*="/reject"] button:hover,
+form[action*="/deactivate"] button:hover {
+    background-color: #4b5563;
+}
+
+/* Car Image */
+.car-image {
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    main {
+        padding: 0 2rem;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+    }
+
+    h3 {
+        font-size: 1.75rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    button, .view-details {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card p {
+        margin-bottom: 0;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+}

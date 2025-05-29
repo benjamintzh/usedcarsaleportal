@@ -1,0 +1,249 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+	height: 100%;
+	padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9fafb; /* gray-50, consistent with profile.html */
+}
+
+/* Header */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 a {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ef4444; /* red-500 */
+    text-decoration: none;
+}
+
+nav {
+    display: none;
+    gap: 16px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #4b5563; /* gray-600 */
+    font-size: 16px;
+}
+
+nav a:hover {
+    color: #ef4444; /* red-500 */
+}
+
+nav a.active {
+    color: #ef4444; /* red-500 */
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-right span {
+    color: #4b5563; /* gray-600 */
+    font-size: 16px;
+}
+
+.header-right a {
+    padding: 8px;
+    border-radius: 9999px;
+    background-color: #f3f4f6; /* gray-100 */
+    color: #4b5563; /* gray-600 */
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.header-right a:hover {
+    background-color: #e5e7eb; /* gray-200 */
+    color: #ef4444; /* red-500 */
+}
+
+/* Footer */
+footer {
+    background-color: #2c3e50;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Section */
+main {
+    padding: 32px 16px;
+	flex: 1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Car Details Card */
+.car-details-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.car-image img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.car-info h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 16px;
+}
+
+.car-info p {
+    font-size: 16px;
+    color: #4b5563; /* gray-600 */
+    margin-bottom: 8px;
+}
+
+.car-info p span {
+    font-weight: bold;
+}
+
+.car-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.action-button {
+    padding: 10px 20px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+}
+
+.book-button {
+    background-color: #f3f4f6; /* gray-100 */
+    color: #4b5563; /* gray-600 */
+}
+
+.book-button:hover {
+    background-color: #e5e7eb; /* gray-200 */
+    color: #ef4444; /* red-500 */
+}
+
+.bid-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bid-form label {
+    font-size: 16px;
+    color: #4b5563; /* gray-600 */
+}
+
+.bid-form input {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #d1d5db; /* gray-300 */
+    border-radius: 5px;
+    width: 150px;
+}
+
+.bid-button {
+    background-color: #ef4444; /* red-500 */
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.bid-button:hover {
+    background-color: #dc2626; /* red-600 */
+}
+
+.auth-prompt {
+    text-align: center;
+    padding: 16px;
+}
+
+.auth-prompt p {
+    font-size: 16px;
+    color: #4b5563; /* gray-600 */
+}
+
+.auth-prompt a {
+    color: #ef4444; /* red-500 */
+    text-decoration: none;
+}
+
+.auth-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    nav {
+        display: flex;
+    }
+
+    .car-details-card {
+        flex-direction: row;
+        gap: 32px;
+    }
+
+    .car-image {
+        flex: 1;
+    }
+
+    .car-info {
+        flex: 1;
+    }
+
+    .car-actions {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .car-info h2 {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .bid-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .bid-form input {
+        width: 100%;
+    }
+}

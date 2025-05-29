@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bid Details - AutoXpress</title>
+    <link rel="stylesheet" href="/css/bid-details.css">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-container">
+        <div class="logo">
+            <a href="/admin/dashboard">AutoXpress</a>
+        </div>
+        <nav class="navbar">
+            <a href="/home">Client Portal</a>
+            <a href="/admin/manage-appointments">Manage Appointments</a>
+            <a href="/admin/manage-bids">Manage Bids</a>
+            <a href="/admin/manage-cars">Manage Cars</a>
+            <a href="/admin/manage-users">Manage Users</a>
+            <a th:href="@{/user/profile}">Profile</a>
+            <a th:href="@{/logout}">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <h2>Bid Details</h2>
+    <div class="card">
+        <p><strong>ID:</strong> <span th:text="${bid.id}"></span></p>
+        <p><strong>Car:</strong> <span th:text="${bid.car.manufacture + ' ' + bid.car.model}"></span></p>
+        <p><strong>User:</strong> <span th:text="${bid.user.username}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${bid.user.email}"></span></p>
+        <p><strong>Contact:</strong> <span th:text="${bid.user.contactNumber}"></span></p>
+        <p><strong>Amount:</strong> $<span th:text="${bid.amount}"></span></p>
+        <p><strong>Status:</strong> <span class="bid-status" th:text="${bid.status}"></span></p>
+
+        <div th:if="${bid.status == 'PENDING'}" class="action-buttons" style="margin-top: 1rem;">
+            <form th:action="@{/admin/bid/accept/{id}(id=${bid.id})}" method="post" style="display: inline-block;">
+                <button type="submit" class="view-details-btn" style="background-color: #10b981;">Accept</button>
+            </form>
+            <form th:action="@{/admin/bid/reject/{id}(id=${bid.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;">
+                <button type="submit" class="view-details-btn" style="background-color: #ef4444;">Reject</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

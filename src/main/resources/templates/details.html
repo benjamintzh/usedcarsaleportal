@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Details - AutoXpress</title>
+    <link rel="stylesheet" th:href="@{/css/details.css}"/>
+</head>
+<body>
+	<div class="wrapper">
+    <!-- Header -->
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}" class="active">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ROLE_ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="container">
+            <div class="car-details-card">
+                <div class="car-image">
+                    <img th:src="@{${car.imagePath} ?: '/images/default-car.jpg'}" alt="Car Image" onerror="this.src='/images/default-car.jpg'">
+                </div>
+                <div class="car-info">
+                    <h2 th:text="${car.manufacture} + ' ' + ${car.model}"></h2>
+                    <p>Year: <span th:text="${car.registrationYear}"></span></p>
+                    <p>Price: $<span th:text="${car.price}"></span></p>
+                    <p th:if="${car.user != null}">Posted by: <span th:text="${car.user.username}"></span></p>
+                    <p>Status: <span th:text="${car.active ? 'Active' : 'Inactive'}"></span></p>
+                </div>
+                <div class="car-actions" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/user/appointment(carId=${car.id})}" class="action-button book-button">Book Test Drive</a>
+                    <!-- Show bid form only if the authenticated user is the car's owner -->
+                    <div th:if="${car.user != null and #authentication.name == car.user.username}">
+                        <form th:action="@{/car/bid/{id}(id=${car.id})}" method="post" class="bid-form">
+                            <label for="amount">Your Proposed Price:</label>
+                            <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+                            <button type="submit" class="action-button bid-button">Submit Price Proposal</button>
+                        </form>
+                        <div th:if="${error}" class="error-message">
+                            <p th:text="${error}" style="color: red;"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-prompt" sec:authorize="!isAuthenticated()">
+                    <p>Please <a th:href="@{/login}">login</a> to book a test drive or submit a price proposal.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+	<footer>
+		<p>© 2025 AutoXpress. All rights reserved.</p>
+	</footer>
+	</div>
+</body>
+</html>

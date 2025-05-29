@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Catalog - AutoXpress</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}"/>
+</head>
+<body>
+	<div class="wrapper">
+    <!-- Header -->
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}" class="active">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="container">
+            <div class="header-section">
+                <h2>Car Catalog</h2>
+                <div>
+                    <a th:href="@{/car/post}" sec:authorize="isAuthenticated()" class="post-button">Post a New Car</a>
+                    <a th:href="@{/user/refresh}" class="refresh-button">Refresh List</a>
+                </div>
+            </div>
+            <div class="car-grid">
+                <div class="car-card" th:each="car : ${cars}">
+                    <img th:src="@{${car.imagePath} + '?' + ${#dates.format(#dates.createNow(), 'yyyyMMddHHmmss')} ?: '/images/default-car.jpg'}" 
+                         alt="Car Image" 
+                         th:attr="data-image-path=${car.imagePath}" 
+                         onerror="this.src='/images/default-car.jpg'; console.log('Image failed to load: ' + this.getAttribute('data-image-path'));">
+                    <div class="car-details">
+                        <h3 th:text="${car.manufacture} + ' ' + ${car.model}"></h3>
+                        <p>Year: <span th:text="${car.registrationYear}"></span></p>
+                        <p>Price: $<span th:text="${car.price}"></span></p>
+                        <p th:if="${car.user != null}">Posted by: <span th:text="${car.user.username}"></span></p>
+                    </div>
+                    <div class="car-actions">
+                        <a th:href="@{/car/details/{id}(id=${car.id})}" class="action-button view-button">View Details</a>
+						<a th:href="@{/car/edit/{id}(id=${car.id})}" th:if="${#authorization.expression('isAuthenticated() and authentication.name == ''' + car.user.username + '''')}"
+						 class="btn btn-warning action-button view-button">Edit</a>
+                        <a th:href="@{/car/deactivate/{id}(id=${car.id})}"
+                           th:if="${car.active} and ${#authorization.expression('isAuthenticated() and authentication.name == ''' + car.user.username + '''')}"
+                           class="action-button deactivate-button">Deactivate</a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(cars)}" class="no-cars">
+                <p>No cars available at the moment.</p>
+            </div>
+        </div>
+    </main>
+	
+	<footer>
+		<p>© 2025 AutoXpress. All rights reserved.</p>
+	</footer>
+	</div>
+    <!-- Debug Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.car-card img').forEach(img => {
+                console.log('Image path for car: ' + img.getAttribute('data-image-path'));
+            });
+        });
+    </script>
+</body>
+</html>

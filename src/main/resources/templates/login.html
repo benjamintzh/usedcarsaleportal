@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AutoXpress</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+	<div class="wrapper">
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="login-hero">
+            <h1>Login to AutoXpress</h1>
+            <p>Access your account to post cars or manage your listings.</p>
+        </section>
+        <section class="form-container">
+            <h2>Login</h2>
+            <form th:action="@{/login}" method="post" class="form-grid">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                    <span th:if="${param.error}" class="error">Invalid username or password.</span>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <span th:if="${param.error}" class="error">Invalid username or password.</span>
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+            </form>
+            <p>Don't have an account? <a th:href="@{/user/register}">Register here</a></p>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 AutoXpress. All rights reserved.</p>
+    </footer>
+	</div>
+</body>
+</html>

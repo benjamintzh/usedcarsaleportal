@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users - AutoXpress</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/manage-users.css">
+</head>
+<body>
+	<header class="site-header">
+			<div class="container header-container">
+		<div class="logo">
+			<a href="/admin/dashboard">AutoXpress</a>
+		</div>
+		<nav class="navbar">
+			<a href="/home">Client Portal</a>
+			<a href="/admin/manage-appointments">Manage Appointments</a>
+			<a href="/admin/manage-bids">Manage Bids</a>
+			<a href="/admin/manage-cars">Manage Cars</a>
+			<a href="/admin/manage-users">Manage Users</a>
+			<a th:href="@{/user/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+			</nav>
+		</div>
+	</header>
+	
+    <main>
+        <h2>All Users</h2>
+        <div class="filter-section">
+            <select id="roleFilter" class="filter-dropdown">
+                <option value="all">All Roles</option>
+                <option value="user">USER</option>
+                <option value="admin">ADMIN</option>
+            </select>
+        </div>
+        <table id="usersTable" class="users-table">
+            <thead>
+                <tr>
+                    <th data-sort="id">ID <span class="sort-arrow" onclick="sortTable(0)">▲</span></th>
+                    <th data-sort="username" onclick="sortTable(1)">Username <span class="sort-arrow">▲</span></th>
+                    <th data-sort="email" onclick="sortTable(2)">Email <span class="sort-arrow">▲</span></th>
+                    <th data-sort="contact" onclick="sortTable(3)">Contact Number <span class="sort-arrow">▲</span></th>
+                    <th data-sort="role" onclick="sortTable(4)">Role <span class="sort-arrow">▲</span></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user, iterStat : ${users}" th:id="'row' + ${iterStat.count}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.contactNumber}"></td>
+                    <td th:class="'role-' + ${user.role.toLowerCase()}" th:text="${user.role}"></td>
+                    <td>
+                        <a th:href="@{/admin/user/{id}(id=${user.id})}" class="view-details-btn">View Details</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="noResultsMessage" class="no-results-message" style="display: none;">
+            No users match the selected filters.
+        </div>
+    </main>
+    <script>
+        let sortDirection = 1;
+        let lastSortedColumn = -1;
+
+        function applyFilters() {
+            try {
+                const roleFilter = document.getElementById("roleFilter").value.toLowerCase();
+                const table = document.getElementById("usersTable");
+                const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const noResultsMessage = document.getElementById("noResultsMessage");
+                let hasVisibleRows = false;
+
+                console.log("Applying filters:", { roleFilter });
+
+                for (let row of rows) {
+                    const role = row.cells[4].textContent.trim().toLowerCase();
+
+                    const matchesRole = roleFilter === "all" || role === roleFilter;
+
+                    console.log("Row check:", { role, matchesRole });
+
+                    if (matchesRole) {
+                        row.style.display = "";
+                        hasVisibleRows = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+
+                noResultsMessage.style.display = hasVisibleRows ? "none" : "block";
+                console.log("Visible rows:", hasVisibleRows);
+            } catch (error) {
+                console.error("Error applying filters:", error);
+            }
+        }
+
+        function sortTable(columnIndex) {
+            try {
+                const table = document.getElementById("usersTable");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const rows = Array.from(tbody.getElementsByTagName("tr"));
+
+                const headers = table.getElementsByTagName("th");
+                for (let i = 0; i < headers.length; i++) {
+                    headers[i].classList.remove("sorted");
+                    headers[i].getElementsByClassName("sort-arrow")[0].innerHTML = "▲";
+                }
+
+                if (lastSortedColumn === columnIndex) {
+                    sortDirection *= -1;
+                } else {
+                    sortDirection = 1;
+                }
+                lastSortedColumn = columnIndex;
+
+                rows.sort((a, b) => {
+                    let aValue = a.cells[columnIndex].textContent.trim();
+                    let bValue = b.cells[columnIndex].textContent.trim();
+
+                    // Numeric sorting for ID
+                    if (columnIndex === 0) {
+                        return (parseInt(aValue) - parseInt(bValue)) * sortDirection;
+                    }
+
+                    // Alphanumeric sorting for other columns
+                    return aValue.localeCompare(bValue, undefined, { numeric: true }) * sortDirection;
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+                headers[columnIndex].classList.add("sorted");
+                headers[columnIndex].getElementsByClassName("sort-arrow")[0].innerHTML = sortDirection === 1 ? "▲" : "▼";
+
+                applyFilters();
+                console.log("Table sorted by column:", columnIndex);
+            } catch (error) {
+                console.error("Error sorting table:", error);
+            }
+        }
+
+        document.getElementById("roleFilter").addEventListener("change", function() {
+            try {
+                console.log("Role filter changed:", this.value);
+                applyFilters();
+            } catch (error) {
+                console.error("Error applying role filter:", error);
+            }
+        });
+
+        // Initial filter application
+        try {
+            applyFilters();
+        } catch (error) {
+            console.error("Error during initial filter application:", error);
+        }
+    </script>
+</body>
+</html>

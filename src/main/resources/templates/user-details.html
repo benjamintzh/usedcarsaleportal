@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Details - AutoXpress</title>
+    <link rel="stylesheet" href="/css/user-details.css">
+</head>
+<body>
+	<header class="site-header">
+			<div class="container header-container">
+		<div class="logo">
+			<a href="/admin/dashboard">AutoXpress</a>
+		</div>
+		<nav class="navbar">
+			<a href="/home">Client Portal</a>
+			<a href="/admin/manage-appointments">Manage Appointments</a>
+			<a href="/admin/manage-bids">Manage Bids</a>
+			<a href="/admin/manage-cars">Manage Cars</a>
+			<a href="/admin/manage-users">Manage Users</a>
+			<a th:href="@{/user/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+			</nav>
+		</div>
+	</header>
+	
+    <main>
+        <h2>User Details</h2>
+
+		<div class="wrapper">
+	        <h3>Change Role</h3>
+	        <div class="form-section">
+	            <form th:action="@{/admin/user/set-role/{id}(id=${user.id})}" method="post" class="role-form">
+					<div class="form-group">
+	                <label for="role" class="form-label">Role:</label>
+	                <select id="role" name="role" class="filter-dropdown">
+	                    <option value="USER" th:selected="${user.role == 'USER'}">USER</option>
+	                    <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">ADMIN</option>
+	                </select>
+					<button type="submit" class="view-details-btn">Update Role</button>
+					</div>
+	            </form>
+	        </div>
+	
+			<h3>Edit User Information</h3>
+			<div class="form-section">
+			    <form th:action="@{/admin/user/update/{id}(id=${user.id})}" method="post" class="edit-form grid-form">
+			        <div class="form-group">
+			            <label for="username">Username:</label>
+			            <input type="text" id="username" name="username" th:value="${user.username}" required>
+			        </div>
+			        <div class="form-group">
+			            <label for="email">Email:</label>
+			            <input type="email" id="email" name="email" th:value="${user.email}" required>
+			        </div>
+			        <div class="form-group">
+			            <label for="contactNumber">Contact Number:</label>
+			            <input type="text" id="contactNumber" name="contactNumber" th:value="${user.contactNumber}" required>
+			        </div>
+			        <div class="form-group">
+			            <label for="password">New Password (optional):</label>
+			            <input type="password" id="password" name="password" placeholder="Leave blank to keep current password">
+			        </div>
+			        <div class="form-group full-width">
+			            <button type="submit" class="save-details-btn">Save all</button>
+			        </div>
+			    </form>
+			</div>
+			<a href="/admin/manage-users" class="back-btn">Back to Users</a>
+		</div>
+
+    </main>
+</body>
+</html>

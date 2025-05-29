@@ -1,0 +1,201 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Header Styles */
+.site-header {
+    background-color: #1f2937; /* dark background */
+    padding: 1rem 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    margin: 0 10px 0 10px;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navbar a {
+	font-size: 1.2rem;
+    color: #d1d5db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: rgb(255, 255, 255);
+}
+
+/* Card Styling */
+.card {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Filter Section */
+.filter-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-dropdown {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-dropdown:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* View Details Button */
+.view-details-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: #3b82f6;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.view-details-btn:hover {
+    background-color: #2563eb;
+}
+
+/* Table Styling */
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-table th,
+.appointments-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.appointments-table th {
+    background-color: #f4f4f4;
+    cursor: pointer;
+    position: relative;
+}
+
+.appointments-table th.sorted .sort-arrow {
+    color: #3b82f6;
+}
+
+.appointments-table th .sort-arrow {
+    position: absolute;
+    right: 8px;
+    font-size: 12px;
+}
+
+.appointments-table td {
+    color: #4b5563;
+}
+
+/* Appointment Status Styling */
+.status-pending {
+    color: #eab308; /* Yellow for PENDING */
+    font-weight: bold;
+}
+
+.status-approved {
+    color: #10b981; /* Green for APPROVED */
+    font-weight: bold;
+}
+
+.status-denied {
+    color: #dc2626; /* Red for DENIED */
+    font-weight: bold;
+}
+
+/* No Results Message */
+.no-results-message {
+    margin-top: 1rem;
+    padding: 10px;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .filter-section {
+        flex-wrap: nowrap;
+    }
+    .appointments-table th,
+    .appointments-table td {
+        padding: 15px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .appointments-table {
+        font-size: 16px;
+    }
+    .no-results-message {
+        font-size: 16px;
+    }
+}

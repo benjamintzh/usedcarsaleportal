@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Car - AutoXpress</title>
+    <link rel="stylesheet" href="/css/post.css">
+</head>
+<body>
+	<div class="wrapper">
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="post-hero">
+            <h1>Post Your Car</h1>
+            <p>List your used car for sale on AutoXpress and reach thousands of potential buyers!</p>
+        </section>
+        <section class="post-form">
+            <h2>Post a Car for Sale</h2>
+            <form th:action="@{/car/post}" th:object="${car}" method="post" enctype="multipart/form-data" class="form-grid">
+                <div class="form-group">
+                    <label for="manufacture">Manufacture</label>
+                    <input type="text" id="manufacture" th:field="*{manufacture}" required>
+                    <span th:errors="*{manufacture}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <input type="text" id="model" th:field="*{model}" required>
+                    <span th:errors="*{model}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="registrationYear">Registration Year</label>
+                    <input type="number" id="registrationYear" th:field="*{registrationYear}" required>
+                    <span th:errors="*{registrationYear}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" th:field="*{price}" required>
+                    <span th:errors="*{price}" class="error"></span>
+                </div>
+                <div class="form-group full-width">
+                    <label for="image">Image</label>
+                    <input type="file" id="image" th:field="*{image}" accept="image/*">
+                    <span th:errors="*{image}" class="error"></span>
+                </div>
+                <button type="submit" class="submit-button">Post Car</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 AutoXpress. All rights reserved.</p>
+    </footer>
+	</div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - AutoXpress</title>
+    <link rel="stylesheet" href="/css/contact.css">
+</head>
+<body>
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}" class="active">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="contact-hero">
+            <h1>Contact AutoXpress</h1>
+            <p>We're here to assist you with your car buying or selling needs. Reach out today!</p>
+        </section>
+        <section class="contact-form">
+            <h2>Send Us a Message</h2>
+            <!-- Success Message -->
+            <div th:if="${successMessage}" class="success-message">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <!-- Error Message -->
+            <div th:if="${errorMessage}" class="error-message">
+                <p th:text="${errorMessage}"></p>
+            </div>
+            <form th:action="@{/contact/submit}" method="post" class="form-grid">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="submit-button full-width">Send Message</button>
+            </form>
+        </section>
+        <section class="contact-info">
+            <h2>Get in Touch</h2>
+            <ul>
+                <li>Email: <a href="mailto:support@autoxpress.com">support@autoxpress.com</a></li>
+                <li>Phone: +60 12-405 2028</li>
+                <li>Address: 123 Auto Lane, Kuala Lumpur, Malaysia</li>
+            </ul>
+        </section>
+        <section class="contact-hours">
+            <h2>Business Hours</h2>
+            <ul>
+                <li>Monday–Friday: 9:00 AM – 6:00 PM</li>
+                <li>Saturday: 10:00 AM – 4:00 PM</li>
+                <li>Sunday: Closed</li>
+            </ul>
+        </section>
+        <section class="contact-map">
+            <h2>Find Us</h2>
+            <div class="map-placeholder">
+                <div class="map-responsive">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3594.458754837566!2d100.33917617447536!3d5.4160208350424845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304ac3e21aa452f7%3A0x5d72532ef1412cb0!2sBangunan%20Wawasan!5e1!3m2!1sen!2smy!4v1748161266404!5m2!1sen!2smy" 
+                            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 AutoXpress. All rights reserved.</p>
+    </footer>
+</body>
+</html>

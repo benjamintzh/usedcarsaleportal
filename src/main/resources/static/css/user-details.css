@@ -1,0 +1,281 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Header Styles */
+.site-header {
+    background-color: #1f2937; /* dark background */
+    padding: 1rem 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    margin: 0 10px 0 10px;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navbar a {
+	font-size: 1.2rem;
+    color: #d1d5db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: rgb(255, 255, 255);
+}
+
+/* Card Styling */
+.card {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+    flex: 1;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.card p span {
+    font-weight: bold;
+}
+
+.wrapper {
+	background-color: #ffffff;
+	padding: 2rem;
+	border-radius: 10px;
+}
+
+/* User Details Table */
+.user-details-table {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.user-details-table th,
+.user-details-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.user-details-table th {
+    background-color: #f4f4f4;
+    color: #1f2937;
+}
+
+.user-details-table td {
+    color: #4b5563;
+}
+
+/* Role Styling */
+.role-user {
+    color: #3b82f6; /* Blue for USER */
+    font-weight: bold;
+}
+
+.role-admin {
+    color: #10b981; /* Green for ADMIN */
+    font-weight: bold;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 2rem;
+}
+
+/* Two-column grid form layout */
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+	max-width: 1200px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+/* Full width for buttons or wide elements */
+.full-width {
+    grid-column: span 2;
+    text-align: right;
+}
+
+/* Dropdowns and input styles */
+.filter-dropdown,
+.form-input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.filter-dropdown:focus,
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* Buttons */
+.view-details-btn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    background-color: #3b82f6;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+	margin-top: 1.5rem;
+}
+
+.view-details-btn:hover {
+    background-color: #2563eb;
+}
+
+.save-details-btn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    background-color: #3b82f6;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    background-color: #6b7280;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+    background-color: #4b5563;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-label {
+        width: auto;
+    }
+
+    .filter-dropdown,
+    .form-input {
+        width: 100%;
+    }
+
+    .user-details-table th,
+    .user-details-table td {
+        padding: 10px;
+    }
+
+    .full-width {
+        text-align: left;
+    }
+}
+
+@media (min-width: 1024px) {
+    .user-details-table {
+        font-size: 16px;
+    }
+}

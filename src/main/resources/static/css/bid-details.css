@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Header Styles */
+.site-header {
+    background-color: #1f2937; /* dark background */
+    padding: 1rem 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    margin: 0 10px 0 10px;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navbar a {
+	font-size: 1.2rem;
+    color: #d1d5db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: rgb(255, 255, 255);
+}
+
+/* Card Styling */
+.card {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+    flex: 1;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+.card p span {
+    font-weight: bold;
+}
+
+.bid-status {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #e0f2fe;
+    color: #0284c7;
+    display: inline-block;
+}
+
+.action-buttons button {
+    font-size: 14px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons button:hover {
+    opacity: 0.9;
+}

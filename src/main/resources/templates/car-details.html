@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Details - AutoXpress</title>
+    <link rel="stylesheet" href="/css/car-details.css">
+</head>
+<body>
+	<header class="site-header">
+			<div class="container header-container">
+		<div class="logo">
+			<a href="/admin/dashboard">AutoXpress</a>
+		</div>
+		<nav class="navbar">
+			<a href="/home">Client Portal</a>
+			<a href="/admin/manage-appointments">Manage Appointments</a>
+			<a href="/admin/manage-bids">Manage Bids</a>
+			<a href="/admin/manage-cars">Manage Cars</a>
+			<a href="/admin/manage-users">Manage Users</a>
+			<a th:href="@{/user/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+			</nav>
+		</div>
+	</header>
+	
+	<main class="car-container">
+	        <h2 class="section-title">Car Information</h2>
+	        <div class="card">
+	            <div class="image-section">
+	                <img th:src="@{${car.imagePath}}" alt="Car Image" class="car-image" />
+	            </div>
+	            <div class="info-grid">
+	                <div class="form-group">
+	                    <label>ID :</label>
+	                    <input type="text" th:value="${car.id}" readonly>
+	                </div>
+	                <div class="form-group">
+	                    <label>Manufacture :</label>
+	                    <input type="text" th:value="${car.manufacture}" readonly>
+	                </div>
+	                <div class="form-group">
+	                    <label>Model :</label>
+	                    <input type="text" th:value="${car.model}" readonly>
+	                </div>
+	                <div class="form-group">
+	                    <label>Registration Year :</label>
+	                    <input type="text" th:value="${car.registrationYear}" readonly>
+	                </div>
+	                <div class="form-group">
+	                    <label>Price :</label>
+	                    <input type="text" th:value="${car.price}" readonly>
+	                </div>
+	                <div class="form-group">
+	                    <label>Owner :</label>
+	                    <input type="text" th:value="${car.user.username}" readonly>
+	                </div>
+	                <div class="form-group">
+	                    <label>Status :</label>
+	                    <input type="text" th:value="${car.active ? 'Active' : 'Inactive'}" 
+	                           th:classappend="${car.active} ? 'status-active' : 'status-inactive'" readonly>
+	                </div>
+	            </div>
+	            <div class="action-buttons">
+	                <form th:action="@{/admin/car/activate/{id}(id=${car.id})}" method="post" th:if="${!car.active}">
+	                    <button type="submit" class="activate-btn">Activate</button>
+	                </form>
+	                <form th:action="@{/admin/car/deactivate/{id}(id=${car.id})}" method="post" th:if="${car.active}">
+	                    <button type="submit" class="deactivate-btn">Deactivate</button>
+	                </form>
+	            </div>
+				<div class="back-button-container">
+				    <a href="/admin/manage-cars" class="back-button">← Back to Cars</a>
+				</div>
+	        </div>
+	    </main>
+</body>
+</html>

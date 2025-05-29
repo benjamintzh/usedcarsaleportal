@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - AutoXpress</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="/admin/dashboard">AutoXpress</a>
+            </div>
+            <nav class="navbar">
+                <a href="/home">Client Portal</a>
+                <a href="/admin/manage-appointments">Manage Appointments</a>
+                <a href="/admin/manage-bids">Manage Bids</a>
+                <a href="/admin/manage-cars">Manage Cars</a>
+                <a href="/admin/manage-users">Manage Users</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="dashboard-main container">
+        <h2>Admin Dashboard</h2>
+
+        <!-- Latest Appointments Table -->
+        <section>
+            <h3>Latest Appointments</h3>
+            <div th:if="${#lists.isEmpty(appointments)}" class="no-data-message">
+                <p>No appointments available.</p>
+            </div>
+            <table th:unless="${#lists.isEmpty(appointments)}" class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Car</th>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="appointment : ${appointments}">
+                        <td th:text="${appointment.car.manufacture + ' ' + appointment.car.model}"></td>
+                        <td th:text="${appointment.user.username}"></td>
+                        <td th:text="${appointment.appointmentDate}"></td>
+                        <td>
+                            <span th:text="${appointment.status}" class="status-badge"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/appointment/{id}(id=${appointment.id})}" class="table-link">View</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Latest Bids Table -->
+        <section>
+            <h3>Latest Bids</h3>
+            <div th:if="${#lists.isEmpty(bids)}" class="no-data-message">
+                <p>No bids available.</p>
+            </div>
+            <table th:unless="${#lists.isEmpty(bids)}" class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Car</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="bid : ${bids}">
+                        <td th:text="${bid.car.manufacture + ' ' + bid.car.model}"></td>
+                        <td th:text="${bid.user.username}"></td>
+                        <td>$<span th:text="${bid.amount}"></span></td>
+                        <td>
+                            <span th:text="${bid.status}" class="status-badge"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/bid/{id}(id=${bid.id})}" class="table-link">View</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Latest Cars Table -->
+        <section>
+            <h3>Latest Cars</h3>
+            <div th:if="${#lists.isEmpty(cars)}" class="no-data-message">
+                <p>No cars available.</p>
+            </div>
+            <table th:unless="${#lists.isEmpty(cars)}" class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Car</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="car : ${cars}">
+                        <td th:text="${car.manufacture + ' ' + car.model}"></td>
+                        <td>
+                            <span th:class="|status-badge ${car.active ? 'active' : 'inactive'}|" th:text="${car.active ? 'Active' : 'Inactive'}"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/car/{id}(id=${car.id})}" class="table-link">View</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

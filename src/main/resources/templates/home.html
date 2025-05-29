@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - AutoXpress</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <!-- Left Side: Text and Buttons -->
+        <div class="main-content">
+            <h2>
+                Welcome To<br>AutoXpress Used Car Sales.
+            </h2>
+            <p>Browse our collection of quality used cars or post your own for sale!</p>
+            <div class="main-buttons">
+                <a th:href="@{/car/search}">
+                    SEE MORE <span>→</span>
+                </a>
+                <a th:href="@{/car/search}">
+                    REQUEST FOR ANOTHER VEHICLE
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Side: Car Image -->
+        <div class="main-image">
+            <img id="rotating-image" src="designmaterial/xiaomi-su7.png" alt="Car Image">
+        </div>
+    </main>
+
+    <!-- Filter Section -->
+    <section>
+        <form th:action="@{/car/search}" method="get" class="filter-form">
+            <select name="make">
+                <option value="">Brand</option>
+                <option value="">All Brands</option>
+                <!-- Add dynamic brands if available -->
+            </select>
+            <select name="model">
+                <option value="">Model</option>
+                <option value="">All Models</option>
+                <!-- Add dynamic models if available -->
+            </select>
+            <select name="fuel">
+                <option value="">Fuel</option>
+                <option value="">All Fuel Types</option>
+                <!-- Add dynamic fuel types if available -->
+            </select>
+            <select name="priceMax">
+                <option value="">Max Price</option>
+                <option value="">Any Price</option>
+                <!-- Add dynamic price ranges if available -->
+            </select>
+            <button type="submit">SHOW VEHICLE OFFERS</button>
+        </form>
+    </section>
+
+    <!-- JavaScript for Image Rotation -->
+    <script>
+        const images = [
+            'designmaterial/xiaomi-su7.png',
+            'designmaterial/cx5.png', // Replace with actual image path
+            'designmaterial/omoda5.png', // Replace with actual image path
+        ];
+        let currentImageIndex = 0;
+        const imageElement = document.getElementById('rotating-image');
+
+        function changeImage() {
+            // Apply blur and slide-up for fade-out
+            imageElement.classList.remove('image-appear');
+            imageElement.classList.add('image-disappear');
+
+            setTimeout(() => {
+                // Change the image source after fade-out
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                imageElement.src = images[currentImageIndex];
+
+                // Apply slide-down and clear for fade-in
+                imageElement.classList.remove('image-disappear');
+                imageElement.classList.add('image-appear');
+            }, 1000); // Match the duration of the disappear animation
+        }
+
+        // Change image every 5 seconds
+        setInterval(changeImage, 5000);
+
+        // Ensure the first image starts with the appear animation
+        imageElement.classList.add('image-appear');
+    </script>
+</body>
+</html>

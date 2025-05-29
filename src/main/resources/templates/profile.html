@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - AutoXpress</title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}"/>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div>
+            <h1>AutoXpress Used Car Sales</h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+48 702 725 247</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}" class="active">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <h2>User Profile</h2>
+		<div th:if="${param.success}" class="success-message">
+		    Profile updated successfully!
+		</div>
+        <form th:action="@{/user/profile}" th:object="${user}" method="post" class="profile-form">
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" th:field="*{username}" required>
+                <span th:errors="*{username}" class="error"></span>
+            </div>
+			<div class="form-group">
+				<label>Contact Number:</label>
+				<input type="tel" th:field="*{contactNumber}">
+				<span th:errors="*{contactNumber}" class="error"></span>
+			</div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="password" name="password" placeholder="Leave blank to keep current password">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" th:field="*{email}" required>
+                <span th:errors="*{email}" class="error"></span>
+            </div>
+            <button type="submit">Update Profile</button>
+        </form>
+    </main>
+</body>
+</html>

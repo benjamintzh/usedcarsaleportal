@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Bids - AutoXpress</title>
+    <link rel="stylesheet" href="/css/manage-bids.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="/admin/dashboard">AutoXpress</a>
+            </div>
+            <nav class="navbar">
+                <a href="/home">Client Portal</a>
+                <a href="/admin/manage-appointments">Manage Appointments</a>
+                <a href="/admin/manage-bids">Manage Bids</a>
+                <a href="/admin/manage-cars">Manage Cars</a>
+                <a href="/admin/manage-users">Manage Users</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <h2>All Bids</h2>
+        <div class="filter-section">
+            <select id="statusFilter" class="filter-dropdown">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        <table id="bidsTable" class="bids-table">
+            <thead>
+                <tr>
+                    <th data-sort="id">ID <span class="sort-arrow" onclick="sortTable(0)">▲</span></th>
+                    <th data-sort="car">Car <span class="sort-arrow" onclick="sortTable(1)">▲</span></th>
+                    <th data-sort="user">User <span class="sort-arrow" onclick="sortTable(2)">▲</span></th>
+                    <th data-sort="amount">Amount <span class="sort-arrow" onclick="sortTable(3)">▲</span></th>
+                    <th data-sort="status">Status <span class="sort-arrow" onclick="sortTable(4)">▲</span></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="bid, iterStat : ${bids}" th:id="'row' + ${iterStat.count}">
+                    <td th:text="${iterStat.count}"></td>
+                    <td th:text="${bid.car.manufacture} + ' ' + ${bid.car.model}"></td>
+                    <td th:text="${bid.user.username}"></td>
+                    <td th:text="'$' + ${bid.amount}"></td>
+                    <td th:class="'status-' + ${bid.status.toLowerCase()}" th:text="${bid.status}"></td>
+                    <td>
+                        <a th:href="@{/admin/bid/{id}(id=${bid.id})}" class="view-details-btn">View Details</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="noResultsMessage" class="no-results-message" style="display: none;">
+            No bids match the selected status.
+        </div>
+    </main>
+    <script>
+        let sortDirection = 1;
+        let lastSortedColumn = -1;
+
+        function sortTable(columnIndex) {
+            try {
+                const table = document.getElementById("bidsTable");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const rows = Array.from(tbody.getElementsByTagName("tr"));
+                const noResultsMessage = document.getElementById("noResultsMessage");
+
+                const headers = table.getElementsByTagName("th");
+                for (let i = 0; i < headers.length; i++) {
+                    const arrow = headers[i].getElementsByClassName("sort-arrow")[0];
+                    if (arrow) arrow.innerHTML = "▲";
+                    headers[i].classList.remove("sorted");
+                }
+
+                if (lastSortedColumn === columnIndex) {
+                    sortDirection *= -1;
+                } else {
+                    sortDirection = 1;
+                }
+                lastSortedColumn = columnIndex;
+
+                rows.sort((a, b) => {
+                    let aValue = a.cells[columnIndex].textContent.trim();
+                    let bValue = b.cells[columnIndex].textContent.trim();
+
+                    // Handle ID and Amount columns for numeric sorting
+                    if (columnIndex === 0 || columnIndex === 3) {
+                        aValue = parseFloat(columnIndex === 3 ? aValue.replace('$', '') : aValue) || 0;
+                        bValue = parseFloat(columnIndex === 3 ? bValue.replace('$', '') : bValue) || 0;
+                        return (aValue - bValue) * sortDirection;
+                    }
+
+                    // Default string comparison for other columns
+                    return aValue.localeCompare(bValue, undefined, { numeric: true }) * sortDirection;
+                });
+
+                // Update ID column after sorting
+                rows.forEach((row, index) => {
+                    row.cells[0].textContent = index + 1;
+                    row.id = 'row' + (index + 1);
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+                headers[columnIndex].classList.add("sorted");
+                headers[columnIndex].getElementsByClassName("sort-arrow")[0].innerHTML = sortDirection === 1 ? "▲" : "▼";
+
+                // Check if any rows are visible after sorting
+                const visibleRows = rows.filter(row => row.style.display !== "none").length;
+                noResultsMessage.style.display = visibleRows === 0 ? "block" : "none";
+            } catch (error) {
+                console.error("Error sorting table:", error);
+            }
+        }
+
+        document.getElementById("statusFilter").addEventListener("change", function() {
+            try {
+                const status = this.value;
+                const rows = document.getElementById("bidsTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const noResultsMessage = document.getElementById("noResultsMessage");
+                let visibleIndex = 1;
+                let hasVisibleRows = false;
+
+                for (let row of rows) {
+                    const rowStatus = row.cells[4].textContent.trim().toLowerCase();
+                    if (status === "all" || rowStatus === status) {
+                        row.style.display = "";
+                        row.cells[0].textContent = visibleIndex++;
+                        row.id = 'row' + (visibleIndex - 1);
+                        hasVisibleRows = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+
+                noResultsMessage.style.display = hasVisibleRows ? "none" : "block";
+            } catch (error) {
+                console.error("Error filtering by status:", error);
+            }
+        });
+    </script>
+</body>
+</html>

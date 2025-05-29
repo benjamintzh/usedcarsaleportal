@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - AutoXpress</title>
+    <link rel="stylesheet" th:href="@{/css/appointment.css}"/>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div>
+            <h1><a href="/home">AutoXpress Used Car Sales</a></h1>
+        </div>
+        <nav>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/car/list}" class="active">Catalog</a>
+            <a th:href="@{/about}">About</a>
+            <a th:href="@{/contact}">Contact</a>
+        </nav>
+        <div class="header-right">
+            <span>+60 12-405 2028</span>
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+                <a th:href="@{/admin/dashboard}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/user/register}">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="main-content">
+            <h2>Book Test Drive</h2>
+            <form th:action="@{/user/appointment}" th:object="${appointment}" method="post" class="appointment-form" id="appointmentForm">
+                <!-- Display Form Errors -->
+                <div th:if="${#fields.hasErrors('global')}" class="error">
+                    <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>
+                </div>
+                <div th:if="${#fields.hasErrors('*')}" class="error">
+                    <p>Please correct the following errors:</p>
+                    <ul>
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <label for="carDetails">Car:</label>
+                    <input type="text" id="carDetails" th:value="${appointment.carManufacture + ' ' + appointment.carModel}" readonly required>
+                    <input type="hidden" th:field="*{carId}" th:value="${param.carId}">
+                    <input type="hidden" th:field="*{carManufacture}">
+                    <input type="hidden" th:field="*{carModel}">
+                    <span th:errors="*{carId}" class="error"></span>
+                    <span th:errors="*{carManufacture}" class="error"></span>
+                    <span th:errors="*{carModel}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" th:field="*{username}" required>
+                    <span th:errors="*{username}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="contactNumber">Contact Number:</label>
+                    <input type="tel" id="contactNumber" th:field="*{contactNumber}">
+                    <span th:errors="*{contactNumber}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" th:field="*{email}" required>
+                    <span th:errors="*{email}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="appointmentDate">Date and Time (9:00 AM - 5:00 PM):</label>
+                    <input type="datetime-local" id="appointmentDate" th:field="*{appointmentDate}" required>
+                    <span th:errors="*{appointmentDate}" class="error"></span>
+                    <span id="timeError" class="error" style="display: none;">Please select a time between 9:00 AM and 5:00 PM.</span>
+                </div>
+                <button type="submit">Book Appointment</button>
+            </form>
+
+            <!-- Confirmation Modal -->
+            <div id="confirmationModal" class="modal" th:style="${showModal} ? 'display: flex;' : 'display: none;'">
+                <div class="modal-content">
+                    <h3>Booking Confirmed!</h3>
+                    <p>Your test drive appointment has been successfully booked. You will receive a confirmation email shortly.</p>
+                    <div class="confirmation-details">
+                        <p><strong>Appointment ID:</strong> <span th:text="${appointmentId}"></span></p>
+                        <p><strong>Car:</strong> <span th:text="${appointment.carManufacture + ' ' + appointment.carModel}"></span></p>
+                        <p><strong>Date and Time:</strong> <span th:text="${#temporals.format(appointment.appointmentDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+                        <p><strong>Username:</strong> <span th:text="${appointment.username}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="${appointment.email}"></span></p>
+                        <p th:if="${appointment.contactNumber}"><strong>Contact Number:</strong> <span th:text="${appointment.contactNumber}"></span></p>
+                    </div>
+                    <p>Redirecting to car catalog in <span id="countdown">10</span> seconds...</p>
+                    <button class="close-button" onclick="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript for Time Restriction and Modal -->
+    <script>
+        // Form Submission Time Restriction
+        document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+            const dateInput = document.getElementById('appointmentDate');
+            const timeError = document.getElementById('timeError');
+            const dateValue = new Date(dateInput.value);
+            const hours = dateValue.getHours();
+            const minutes = dateValue.getMinutes();
+
+            if (hours < 9 || hours > 17 || (hours === 17 && minutes > 0)) {
+                event.preventDefault();
+                timeError.style.display = 'block';
+            } else {
+                timeError.style.display = 'none';
+            }
+
+            // Debug: Log form data
+            const formData = new FormData(event.target);
+            console.log('Form Data:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+        });
+
+        // Clear time error on input change
+        document.getElementById('appointmentDate').addEventListener('change', function() {
+            document.getElementById('timeError').style.display = 'none';
+        });
+
+        // Modal Auto-Close and Redirect
+        const modal = document.getElementById('confirmationModal');
+        if (modal && modal.style.display === 'flex') {
+            let seconds = 10;
+            const countdownElement = document.getElementById('countdown');
+            const countdown = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    window.location.href = '/car/list';
+                }
+            }, 1000);
+        }
+
+        // Manual Close Function
+        function closeModal() {
+            const modal = document.getElementById('confirmationModal');
+            modal.style.display = 'none';
+            window.location.href = '/car/list';
+        }
+    </script>
+</body>
+</html>

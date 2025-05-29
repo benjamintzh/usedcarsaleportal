@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointment Details - AutoXpress</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/appointment-details.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="/admin/dashboard">AutoXpress</a>
+            </div>
+            <nav class="navbar">
+                <a href="/home">Client Portal</a>
+                <a href="/admin/manage-appointments">Manage Appointments</a>
+                <a href="/admin/manage-bids">Manage Bids</a>
+                <a href="/admin/manage-cars">Manage Cars</a>
+                <a href="/admin/manage-users">Manage Users</a>
+                <a th:href="@{/user/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <h2>Appointment Details</h2>
+        <table class="details-table">
+            <tr>
+                <th>ID</th>
+                <td th:text="${appointment.id}">1</td>
+            </tr>
+            <tr>
+                <th>Car</th>
+                <td th:text="${appointment.car.manufacture + ' ' + appointment.car.model}">Toyota Camry</td>
+            </tr>
+            <tr>
+                <th>User</th>
+                <td th:text="${appointment.car.user.username}">johndoe</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td th:text="${appointment.user.email}">johndoe@example.com</td>
+            </tr>
+            <tr>
+                <th>Contact</th>
+                <td th:text="${appointment.user.contactNumber}">123-456-7890</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td th:text="${appointment.appointmentDate}">2025-05-27</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    <span th:text="${appointment.status}" th:class="'appointment-status status-' + ${appointment.status.toLowerCase()}"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>Update Status</th>
+                <td>
+                    <form th:action="@{/admin/appointment/set-status/{id}(id=${appointment.id})}" method="post">
+                        <select name="status" class="status-dropdown">
+                            <option value="PENDING" th:selected="${appointment.status == 'PENDING'}">Pending</option>
+                            <option value="APPROVED" th:selected="${appointment.status == 'APPROVED'}">Approved</option>
+                            <option value="DENIED" th:selected="${appointment.status == 'DENIED'}">Denied</option>
+                        </select>
+                        <button type="submit">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Cars - AutoXpress</title>
+    <link rel="stylesheet" href="/css/manage-cars.css">
+</head>
+<body>
+	<header class="site-header">
+			<div class="container header-container">
+		<div class="logo">
+			<a href="/admin/dashboard">AutoXpress</a>
+		</div>
+		<nav class="navbar">
+			<a href="/home">Client Portal</a>
+			<a href="/admin/manage-appointments">Manage Appointments</a>
+			<a href="/admin/manage-bids">Manage Bids</a>
+			<a href="/admin/manage-cars">Manage Cars</a>
+			<a href="/admin/manage-users">Manage Users</a>
+			<a th:href="@{/user/profile}">Profile</a>
+			<a th:href="@{/logout}">Logout</a>
+			</nav>
+		</div>
+	</header>
+	
+    <main>
+        <h2>All Cars</h2>
+        <div class="filter-section">
+            <select id="manufacturerFilter" class="filter-select">
+                <option value="all">All Manufacturers</option>
+                <option th:each="manufacturer : ${manufacturers}" th:value="${manufacturer}" th:text="${manufacturer}"></option>
+            </select>
+            <select id="statusFilter" class="filter-select">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            <div class="date-filter-container">
+                <button id="dateFilterBtn" class="filter-btn" onclick="toggleDateRangePicker()">Date</button>
+                <div id="dateRangePicker" class="date-range-picker" style="display: none;">
+                    <select id="fromYear" class="year-select">
+                        <option value="">Select Year</option>
+                        <!-- Years will be populated by JavaScript -->
+                    </select>
+                    <select id="toYear" class="year-select">
+                        <option value="">Select Year</option>
+                        <!-- Years will be populated by JavaScript -->
+                    </select>
+                    <button onclick="filterByDateRange()">Apply</button>
+                    <button onclick="clearDateRange()">Clear</button>
+                </div>
+            </div>
+        </div>
+        <table id="carsTable" class="cars-table">
+            <thead>
+                <tr>
+                    <th data-sort="id">ID <span class="sort-arrow" onclick="sortTable(0)">▲</span></th>
+                    <th data-sort="car" onclick="showManufactureSort()">Car <span class="sort-arrow">▼</span></th>
+                    <th data-sort="owner" onclick="sortTable(2)">Owner <span class="sort-arrow">▲</span></th>
+                    <th data-sort="date" onclick="sortTable(3)">Year <span class="sort-arrow">▲</span></th>
+                    <th data-sort="status" onclick="sortTable(4)">Status <span class="sort-arrow">▲</span></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="car, iterStat : ${cars}" th:id="'row' + ${iterStat.count}">
+                    <td th:text="${car.id}"></td>
+                    <td th:text="${car.manufacture} + ' ' + ${car.model}"></td>
+                    <td th:text="${car.user.username}"></td>
+                    <td th:text="${car.registrationYear}"></td>
+                    <td th:class="'status-' + ${car.active ? 'active' : 'inactive'}" th:text="${car.active ? 'Active' : 'Inactive'}"></td>
+                    <td>
+                        <a th:href="@{/admin/car/{id}(id=${car.id})}" class="view-details-btn">View Details</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="noResultsMessage" class="no-results-message" style="display: none;">
+            No cars match the selected filters.
+        </div>
+    </main>
+    <script>
+        let sortDirection = 1;
+        let lastSortedColumn = -1;
+        let isDatePickerOpen = false;
+        let fromYearValue = 0; // Default: no lower bound
+        let toYearValue = new Date().getFullYear(); // Default: current year
+
+        // Populate year selects
+        function populateYears() {
+            const fromYear = document.getElementById("fromYear");
+            const toYear = document.getElementById("toYear");
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= 1900; year--) {
+                const option = document.createElement("option");
+                option.value = year;
+                option.text = year;
+                fromYear.appendChild(option.cloneNode(true));
+                toYear.appendChild(option.cloneNode(true));
+            }
+        }
+
+        try {
+            populateYears();
+            console.log("Year dropdowns populated successfully");
+        } catch (error) {
+            console.error("Error populating years:", error);
+        }
+
+        function applyFilters() {
+            try {
+                const carFilter = document.getElementById("manufacturerFilter").value.toLowerCase();
+                const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+                const table = document.getElementById("carsTable");
+                const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+                const noResultsMessage = document.getElementById("noResultsMessage");
+                let hasVisibleRows = false;
+
+                console.log("Applying filters:", { carFilter, statusFilter, fromYearValue, toYearValue });
+
+                for (let row of rows) {
+                    const manufacture = row.cells[1].textContent.trim().split(' ')[0].toLowerCase();
+                    const status = row.cells[4].textContent.trim().toLowerCase();
+                    const year = parseInt(row.cells[3].textContent.trim()) || 0;
+
+                    const matchesCar = carFilter === "all" || manufacture === carFilter;
+                    const matchesStatus = statusFilter === "all" || status === statusFilter;
+                    const matchesYear = (fromYearValue === 0 || year >= fromYearValue) && (toYearValue === 0 || year <= toYearValue);
+
+                    console.log("Row check:", { manufacture, status, year, matchesCar, matchesStatus, matchesYear });
+
+                    if (matchesCar && matchesStatus && matchesYear) {
+                        row.style.display = "";
+                        hasVisibleRows = true;
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+
+                noResultsMessage.style.display = hasVisibleRows ? "none" : "block";
+                console.log("Visible rows:", hasVisibleRows);
+            } catch (error) {
+                console.error("Error applying filters:", error);
+            }
+        }
+
+        function sortTable(columnIndex) {
+            try {
+                const table = document.getElementById("carsTable");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const rows = Array.from(tbody.getElementsByTagName("tr"));
+
+                const headers = table.getElementsByTagName("th");
+                for (let i = 0; i < headers.length; i++) {
+                    headers[i].classList.remove("sorted");
+                    headers[i].getElementsByClassName("sort-arrow")[0].innerHTML = "▲";
+                }
+
+                if (lastSortedColumn === columnIndex) {
+                    sortDirection *= -1;
+                } else {
+                    sortDirection = 1;
+                }
+                lastSortedColumn = columnIndex;
+
+                rows.sort((a, b) => {
+                    const aValue = a.cells[columnIndex].textContent.trim();
+                    const bValue = b.cells[columnIndex].textContent.trim();
+                    return aValue.localeCompare(bValue, undefined, { numeric: true }) * sortDirection;
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+                headers[columnIndex].classList.add("sorted");
+                headers[columnIndex].getElementsByClassName("sort-arrow")[0].innerHTML = sortDirection === 1 ? "▲" : "▼";
+
+                applyFilters();
+                console.log("Table sorted by column:", columnIndex);
+            } catch (error) {
+                console.error("Error sorting table:", error);
+            }
+        }
+
+        function showManufactureSort() {
+            try {
+                const table = document.getElementById("carsTable");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const rows = Array.from(tbody.getElementsByTagName("tr"));
+
+                const headers = table.getElementsByTagName("th");
+                for (let i = 0; i < headers.length; i++) {
+                    headers[i].classList.remove("sorted");
+                    headers[i].getElementsByClassName("sort-arrow")[0].innerHTML = "▲";
+                }
+
+                if (lastSortedColumn === 1) {
+                    sortDirection *= -1;
+                } else {
+                    sortDirection = 1;
+                }
+                lastSortedColumn = 1;
+
+                rows.sort((a, b) => {
+                    const aManufacture = a.cells[1].textContent.trim().split(' ')[0];
+                    const bManufacture = b.cells[1].textContent.trim().split(' ')[0];
+                    const aModel = a.cells[1].textContent.trim().split(' ').slice(1).join(' ');
+                    const bModel = b.cells[1].textContent.trim().split(' ').slice(1).join(' ');
+                    const primaryCompare = aManufacture.localeCompare(bManufacture) * sortDirection;
+                    return primaryCompare !== 0 ? primaryCompare : aModel.localeCompare(bModel) * sortDirection;
+                });
+
+                rows.forEach(row => tbody.appendChild(row));
+                headers[1].classList.add("sorted");
+                headers[1].getElementsByClassName("sort-arrow")[0].innerHTML = sortDirection === 1 ? "▲" : "▼";
+
+                applyFilters();
+                console.log("Table sorted by manufacture");
+            } catch (error) {
+                console.error("Error sorting by manufacture:", error);
+            }
+        }
+
+        function toggleDateRangePicker() {
+            try {
+                const picker = document.getElementById("dateRangePicker");
+                if (!picker) {
+                    console.error("Date range picker element not found");
+                    return;
+                }
+                isDatePickerOpen = !isDatePickerOpen;
+                picker.style.display = isDatePickerOpen ? "block" : "none";
+                console.log("Date picker toggled:", isDatePickerOpen ? "open" : "closed");
+            } catch (error) {
+                console.error("Error toggling date range picker:", error);
+            }
+        }
+
+        function clearDateRange() {
+            try {
+                const picker = document.getElementById("dateRangePicker");
+                picker.style.display = "none";
+                isDatePickerOpen = false;
+                document.getElementById("fromYear").value = "";
+                document.getElementById("toYear").value = "";
+                fromYearValue = 0;
+                toYearValue = new Date().getFullYear();
+                console.log("Date range cleared:", { fromYearValue, toYearValue });
+                applyFilters();
+            } catch (error) {
+                console.error("Error clearing date range:", error);
+            }
+        }
+
+        function filterByDateRange() {
+            try {
+                const fromYear = document.getElementById("fromYear");
+                const toYear = document.getElementById("toYear");
+                fromYearValue = parseInt(fromYear.value) || 0;
+                toYearValue = parseInt(toYear.value) || new Date().getFullYear();
+
+                // Validate date range
+                if (fromYearValue > toYearValue && toYearValue !== 0) {
+                    console.warn("Invalid date range: From year greater than To year");
+                    fromYear.value = "";
+                    toYear.value = "";
+                    fromYearValue = 0;
+                    toYearValue = new Date().getFullYear();
+                }
+
+                console.log("Date range applied:", { fromYearValue, toYearValue });
+                applyFilters();
+                clearDatePicker();
+            } catch (error) {
+                console.error("Error filtering by date range:", error);
+            }
+        }
+
+        document.getElementById("manufacturerFilter").addEventListener("change", function() {
+            try {
+                console.log("Manufacturer filter changed:", this.value);
+                applyFilters();
+            } catch (error) {
+                console.error("Error applying manufacturer filter:", error);
+            }
+        });
+
+        document.getElementById("statusFilter").addEventListener("change", function() {
+            try {
+                console.log("Status filter changed:", this.value);
+                applyFilters();
+            } catch (error) {
+                console.error("Error applying status filter:", error);
+            }
+        });
+
+        // Close date picker if clicking outside
+        document.addEventListener("click", function(event) {
+            try {
+                const picker = document.getElementById("dateRangePicker");
+                const container = document.querySelector(".date-filter-container");
+                if (isDatePickerOpen && picker && container && !container.contains(event.target) && !picker.contains(event.target)) {
+                    clearDatePicker();
+                    console.log("Date picker closed due to outside click");
+                }
+            } catch (error) {
+                console.error("Error in click handler:", error);
+            }
+        });
+    </script>
+</body>
+</html>

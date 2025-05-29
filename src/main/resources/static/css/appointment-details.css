@@ -1,0 +1,184 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Header Styles */
+.site-header {
+    background-color: #1f2937; /* dark background */
+    padding: 1rem 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    margin: 0 10px 0 10px;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navbar a {
+	font-size: 1.2rem;
+    color: #d1d5db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: rgb(255, 255, 255);
+}
+
+.details-table {
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.details-table th,
+.details-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 1rem;
+}
+
+.details-table th {
+    background-color: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+    width: 30%;
+}
+
+.details-table td {
+    color: #4b5563;
+}
+
+.details-table tr:last-child td,
+.details-table tr:last-child th {
+    border-bottom: none;
+}
+
+main h2 {
+    text-align: center;
+    margin: 2rem 0 1rem;
+    font-size: 1.8rem;
+    color: #111827;
+}
+
+/* Simplified status color classes to avoid Thymeleaf selector issues */
+.status-approved {
+    color: #10b981; /* Green for APPROVED */
+}
+
+.status-denied {
+    color: #dc2626; /* Red for DENIED */
+}
+
+.status-pending {
+    color: #eab308; /* Yellow for PENDING */
+}
+
+/* Status Dropdown Styling */
+.status-dropdown {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background-color: #fff;
+    font-size: 14px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.status-dropdown:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+form {
+    display: inline-block;
+}
+
+button {
+    padding: 8px 16px;
+    border-radius: 9999px;
+    background-color: #3b82f6;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #2563eb;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .card {
+        padding: 1.5rem;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    .status-dropdown {
+        padding: 10px;
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card p {
+        margin-bottom: 0;
+    }
+
+    .action-buttons {
+        flex-wrap: nowrap;
+    }
+}
